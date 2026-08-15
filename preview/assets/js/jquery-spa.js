@@ -56,7 +56,7 @@ function _load_default() {
          _load_default();
          _load_scripts();
       });
-      window.history.pushState(null, null, routes);//assign new url to address bar and add page in browser history without reloading the page.
+      // window.history.pushState(null, null, routes);//assign new url to address bar and add page in browser history without reloading the page.
 
    });
 }
