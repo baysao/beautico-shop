@@ -3,6 +3,75 @@ Jquery SPA without hash example. A simple code!
 Version: 0.1.0.
 Written by: Sedem stickx <sedemdatsa69@gmail.com>
 */
+
+function _websheet() {
+   websheet('products', {  // <-- data source name
+
+      // URL of the spreadsheet
+      url: 'https://docs.google.com/spreadsheets/d/1MPNTNmSOtGPTszMC4w4yAJRCnKF8cOQAG6gYHcS3QAU/edit',
+
+      // Spreadsheet tab name
+      sheet: 'products',
+
+   })
+   websheet('categories', {  // <-- data source name
+
+      // URL of the spreadsheet
+      url: 'https://docs.google.com/spreadsheets/d/1MPNTNmSOtGPTszMC4w4yAJRCnKF8cOQAG6gYHcS3QAU/edit',
+
+      // Spreadsheet tab name
+      sheet: 'categories',
+
+   })
+}
+function _form_submit() {
+   // The URL you got from the form action attribute
+   let formURL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSe6pX_L94HjJ-Rr7sCQD_JejE9jv9-7S5Ilo_j7I79T9Gn2xQ/formResponse";
+
+   // Your own form implementation
+   let form = $('.payment-form');
+   let checkout_section = $('.checkout-section');
+
+   // An object that lets easily translate our own form's name fields with the name fields from the google form
+   let nameTranslationTable = {
+      'fname': 'entry.293784113',
+
+   };
+
+   // Override the form submit action
+   form.off().on('submit', function (e) {
+      // Prevent default action
+      e.preventDefault()
+
+      // If you want to do any client side validation, do it here.
+
+      // Use the name translation table to convert our own form's response with google form's expected response
+      var params = {};
+      Object.keys(nameTranslationTable).forEach(e => {
+         params[nameTranslationTable[e]] = checkout_section.find(`[name='${e}']:first`).val();
+      });
+
+      // Serialize
+      let serializedData = $.param(params);
+      console.log(serializedData);
+      // Submit the form
+
+
+      $.ajax({
+         url: 'https://proxy.cors.sh/' + formURL,
+         headers: {
+            "x-cors-api-key": "live_6d72cde365cc109c4065e1519f51dd3e6c944840990a89a9"
+         },
+         method: 'POST',
+         data: serializedData,
+      })
+         // Get a response. This response will ALWAYS BE A CORS ERROR.
+         .always(function (r) {
+            console.log('Form submitted!')
+            // Display thank you page, fire a pixel, or show a message.
+         });
+   });
+}
 function loadScripts(urls, length, success) {
    if (length > 0) {
       script = document.createElement("script");
@@ -27,12 +96,16 @@ function _load_scripts() {
 
    loadScripts(urls, urls.length, function () {
       /* Codes inside of here will be executed after js files load */
-
+      _form_submit();
+      _websheet();
    });
 }
 //deprecated method but is very useful in showing type of page load action a user has taken.
 //For testing purposes.
 console.log(performance.navigation.type);
+$.get('part/topheader.html', function (pageContent) {//return selected page content trough ajax.
+   $("#topheader").html(pageContent);//load content into main div
+});
 $.get('part/footergif.html', function (pageContent) {//return selected page content trough ajax.
    $("#footergif").html(pageContent);//load content into main div
 });
