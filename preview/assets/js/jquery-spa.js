@@ -39,15 +39,20 @@ $.get('part/footergif.html', function (pageContent) {//return selected page cont
 function _load_default() {
    //when user clicks on any anchor tag with a data-link attribute fire this event.
    $(document).off().on('click', '[data-link]', function (e) {
-      console.log("test");
+      // console.log("test");
       e.preventDefault();//prevent anchor click default behaviour.
 
-      var routes = $(this).attr('href');//get url from clicked link. 
-      var page = 'part/' + (routes != '' ? routes : "index.html");//if route is empty assign home.html to page to ajax load the default content.
-
-      console.log(page);
-      var routes = page.substring(0, page.lastIndexOf('.'));//remove file extension that shows up in the url bar.
+      var routes = $(this).attr('href');//get url from clicked link.
+      routes = routes != '' ? routes : "index.html";
       console.log(routes);
+      var url_state = window.location.origin + '/' + routes;
+      console.log(url_state);
+      window.history.pushState(null, null, url_state);//assign new url to address bar and add page in browser history without reloading the page.
+
+      var page = 'part/' + routes;
+      console.log(page);
+      // var routes = page.substring(0, page.lastIndexOf('.'));//remove file extension that shows up in the url bar.
+      // console.log(routes);
 
       console.log("Ajax loaded: " + page);
 
@@ -56,7 +61,6 @@ function _load_default() {
          _load_default();
          _load_scripts();
       });
-      // window.history.pushState(null, null, routes);//assign new url to address bar and add page in browser history without reloading the page.
 
    });
 }
@@ -69,6 +73,7 @@ _load_default();
 $(window).on('popstate', function () {
 
    var url = window.location.href;//get page url from address bar.
+   console.log(url);
    var routes = url.substring(url.lastIndexOf('/') + 1);//return page route from url.
    console.log(routes);
    var page = 'part/' + (routes != '' ? routes : "index.html");//if route is empty assign home.html to page to ajax load the default content.
